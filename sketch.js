@@ -1,55 +1,115 @@
-// namespacing
-const World = Matter.World;
+var starImg, fairyImg, bgImg;
+
+var fairy, fairyVoice;
+
+var star, starBody;
+
+
 const Engine = Matter.Engine;
+
+const World = Matter.World;
+
 const Bodies = Matter.Bodies;
 
-// variables for Engine and World
+const Body = Matter.Body;
+
+
 var myEngine, myWorld;
 
-// variables for body
-var ball, ground;
+
+function preload() {
+ 
+ starImg = loadImage("images/star.png");
+  fairyImg = loadAnimation("images/fairyImage1.png", "images/fairyImage2.png");
+
+  bgImg = loadImage("images/starNight.png");
+
+  fairyVoice = loadSound("sound/JoyMusic.mp3");
+
+}
+
 
 function setup() {
-  createCanvas(600, 600);
 
-  //creating Engine
+  createCanvas(800, 750);
+
+
+  fairyVoice.play();
+
+
+  fairy = createSprite(130, 520);
+
+  fairy.addAnimation("fairyflying", fairyImg);
+
+  fairy.scale = 0.25;
+
+
+  star = createSprite(650, 30);
+
+  star.addImage(starImg);
+
+  star.scale = 0.2;
+
+
   myEngine = Engine.create();
 
-  //creating World using Engine
   myWorld = myEngine.world;
 
-  var ballOptions = {
-    //how much it can bouce, its value
-    restitution: 1.5,
-  };
-  // invisible ball creating by using matter.js
-  ball = Bodies.circle(300, 100, 50, ballOptions);
 
-  var groundOptions = {
-    // so that it can not fall
-    isStatic: true,
-  };
-  // invisible ground creating by using matter.js
-  ground = Bodies.rectangle(300, 580, 600, 10, groundOptions);
+  starBody = Bodies.circle(650, 30, 5, { restitution: 0.5, isStatic: true });
 
-  //adding the ball and ground in World
-  World.add(myWorld, ball);
-  World.add(myWorld, ground);
+  World.add(myWorld, starBody);
+
+
+  star.x = starBody.position.x;
+
+  star.y = starBody.position.y;
+
 }
+
 
 function draw() {
-  background(0);
 
-  // Updating the Engine // --- this is Important --- \\
+  background(bgImg);
+
+
   Engine.update(myEngine);
 
-  // changing the mode of rect in center
-  rectMode(CENTER);
-  // changing the mode of ellipse in radius
-  ellipseMode(RADIUS);
-  // variable for position of ball and adding position
-  var pos = ball.position;
-  ellipse(pos.x, pos.y, 50, 50);
 
-  rect(300, 580, 600, 10);
+  if (star.y > 480) {
+
+    star.velocityY = 0;
+
+  }
+ 
+ keyPressed();
+
+
+  drawSprites();
+
 }
+
+
+function keyPressed() {
+
+  if (keyDown("RIGHT_ARROW")) {
+
+    fairy.x = fairy.x + 10;
+
+  }
+
+
+  if (keyDown("LEFT_ARROW")) {
+
+    fairy.x = fairy.x - 10;
+
+  }
+
+
+  if (keyDown("DOWN_ARROW")) {
+
+    star.velocityY = 5;
+  }
+
+}
+
